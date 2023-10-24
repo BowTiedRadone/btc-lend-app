@@ -24,8 +24,8 @@ export default function DepositForm() {
 
   const buildTransaction = async (e) => {
     e.preventDefault();
-    // const testnet = new TestnetHelper();
-    const testnet = new DevEnvHelper();
+    const testnet = new TestnetHelper();
+    // const testnet = new DevEnvHelper();
 
     console.log(testnet);
 

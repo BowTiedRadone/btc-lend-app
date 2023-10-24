@@ -19,21 +19,27 @@ export default function WithdrawForm() {
   const { userData, userSession } = useContext(UserContext);
   const [satoshis, setSatoshis] = useState("");
   const [signature, setSignature] = useState("");
+  const utf8EncodeText = new TextEncoder();
 
+  console.log("Withdraw!");
   const handleInputChange = (event) => {
+    console.log(event.target.value);
     setSatoshis(event.target.value);
   };
 
   const signMessage = async (e) => {
     e.preventDefault();
-    const message = bytesToHex(
+    console.log("got here");
+    const message = //bytesToHex(
+      //utf8EncodeText.encode(
       sbtcWithdrawMessage({
         network: TESTNET,
         amountSats: satoshis,
         bitcoinAddress: userData.profile.btcAddress.p2wpkh.testnet,
-      })
-    );
-
+      });
+    //)
+    // );
+    console.log("message", message);
     openSignatureRequestPopup({
       message,
       userSession,
@@ -48,21 +54,21 @@ export default function WithdrawForm() {
     e.preventDefault();
     const testnet = new TestnetHelper();
     // const testnet = new DevEnvHelper();
-
+    console.log("testnet", testnet);
     let utxos = await testnet.fetchUtxos(
       userData.profile.btcAddress.p2wpkh.testnet
     );
-
+    console.log("utxos", utxos);
     // get sBTC deposit address from bridge API
     const response = await fetch(
       "https://bridge.sbtc.tech/bridge-api/testnet/v1/sbtc/init-ui"
     );
     const data = await response.json();
-
+    console.log("data", data);
     const tx = await sbtcWithdrawHelper({
       network: TESTNET,
       sbtcWalletAddress: data.sbtcContractData.sbtcWalletAddress,
-      bitcoinAddress: userData.profile.btcAddress.p2wpkh.testnet,
+      // bitcoinAddress: userData.profile.btcAddress.p2wpkh.testnet,
       amountSats: satoshis,
       signature,
       feeRate: await testnet.estimateFeeRate("low"),
@@ -99,7 +105,7 @@ export default function WithdrawForm() {
           signature ? buildTransaction(e) : signMessage(e);
         }}
       >
-        {signature ? "Broadcast Withdraw Tx" : "Sign Withdraw Tx"}
+        {signature ? "Broadcast Withdraw Tx" : "Siaagn Withdraw Tx"}
       </button>
     </form>
   );
